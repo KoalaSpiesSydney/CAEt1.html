@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Use of English Test – Modern English Australia</title>
+
+  <style>
+    :root{
+      --blue-dark:#003366;
+      --blue-mid:#0055aa;
+      --blue-light:#e6f0fa;
+
+      --bg:#f9f9f9;
+      --card:#ffffff;
+
+      --ink:#4f4f4f;
+      --muted:#777;
+      --border:#d6e4f0;
+
+      --content: 980px;       /* header + main max width */
+      --pad: 16px;            /* mobile first base padding */
+      --radius: 12px;
+    }
+
+    *{ box-sizing:border-box; }
+
+    body{
+      margin:0;
+      font-family: Arial, sans-serif;
+      background: var(--bg);
+      color: var(--ink);
+      min-height:100vh;
+      display:flex;
+      flex-direction:column;
+    }
+
+    /* ===== HEADER (mobile first) ===== */
+    header{
+      background: var(--card);
+      border-bottom: 1px solid var(--border);
+      padding: 18px var(--pad);
+    }
+
+    .header-inner{
+      max-width: var(--content);
+      margin: 0 auto;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap: 12px;
+    }
+
+    /* Brand is centered within its own block (not stuck left) */
+    .brand{
+      flex: 1;
+      text-align: left;
+      line-height: 1.05;
+      padding-left: 6px; /* nudges away from the edge */
+    }
+
+    .brand .mea{
+      font-size: 1.35rem;     /* bigger on mobile */
+      font-weight: 800;
+      color: var(--blue-dark);
+      letter-spacing: 0.6px;
+    }
+
+    .brand .kss{
+      margin-top: 4px;
+      font-size: 1rem;
+      color: var(--muted);
+      font-weight: 600;
+      letter-spacing: 0.3px;
+    }
+
+    /* Home button */
+    .home-btn{
+      flex: 0 0 auto;
+      text-decoration:none;
+      color: var(--blue-dark);
+      font-size: 1rem;
+      display:inline-flex;
+      align-items:center;
+      gap: 8px;
+      background: var(--blue-light);
+      padding: 10px 14px;
+      border-radius: 10px;
+      border: 1px solid var(--border);
+      transition: background .25s, transform .2s;
+      white-space: nowrap;
+    }
+
+    .home-btn:hover{
+      background:#d9e9fb;
+      transform: translateY(-1px);
+    }
+
+    .home-btn svg{
+      width:18px;
+      height:18px;
+      fill: var(--blue-dark);
+    }
+
+    /* ===== MAIN ===== */
+    main{
+      flex:1;
+      padding: 26px var(--pad) 34px;
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      text-align:center;
+    }
+
+    .main-inner{
+      width:100%;
+      max-width: 760px;
+    }
+
+    h1{
+      margin: 0 0 10px;
+      color: var(--blue-dark);
+      font-size: 1.9rem; /* mobile-first */
+      letter-spacing: .2px;
+    }
+
+    .subtitle{
+      margin: 0 auto 22px;
+      color: var(--muted);
+      font-size: 1rem;
+      line-height: 1.5;
+      max-width: 560px;
+    }
+
+    /* Buttons: mobile-first (stacked, big tap targets) */
+    .button-container{
+      display:grid;
+      grid-template-columns: 1fr;
+      gap: 14px;
+      margin-top: 18px;
+      justify-items: center;
+    }
+
+    .part-btn{
+      width: 100%;
+      max-width: 340px;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      padding: 18px 18px;           /* bigger */
+      font-size: 1.12rem;           /* bigger */
+      font-weight: 700;
+      text-decoration:none;
+      color:#fff;
+      background: var(--blue-dark);
+      border-radius: 14px;
+      border: 0;
+      transition: background .25s, transform .2s;
+      letter-spacing: .2px;
+    }
+
+    .part-btn:hover{
+      background: var(--blue-mid);
+      transform: translateY(-2px);
+    }
+
+    /* ===== FOOTER ===== */
+    footer{
+      text-align:center;
+      padding: 14px var(--pad);
+      font-size: .9rem;
+      color: var(--muted);
+      background:#f0f0f0;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ===== Larger screens ===== */
+    @media (min-width: 720px){
+      header{ padding: 22px 24px; }
+
+      .brand{
+        text-align: left;
+        padding-left: 0;
+      }
+
+      .brand .mea{ font-size: 1.7rem; }
+      .brand .kss{ font-size: 1.05rem; }
+
+      h1{ font-size: 2.3rem; }
+
+      .button-container{
+        grid-template-columns: repeat(3, minmax(160px, 1fr));
+        gap: 18px;
+      }
+
+      .part-btn{
+        max-width: none;
+        padding: 20px 18px;
+        font-size: 1.12rem;
+      }
+    }
+
+    @media (min-width: 1024px){
+      header{ padding: 26px 28px; }
+      .brand .mea{ font-size: 1.9rem; }
+      h1{ font-size: 2.5rem; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="header-inner">
+      <div class="brand">
+        <div class="mea">Modern English Australia</div>
+        <div class="kss">Koala Spies Sydney</div>
+      </div>
+
+      <a href="https://koalaspiessydney.github.io/ModernEnglishAU/MEAtests.html" class="home-btn">
+        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+          <path d="M12 3l9 8h-3v10h-12v-10h-3l9-8z"/>
+        </svg>
+        Home
+      </a>
+    </div>
+  </header>
+
+  <main>
+    <div class="main-inner">
+      <h1>Use of English Test</h1>
+      <p class="subtitle">Practice-focused assessment designed for accuracy, control, and exam readiness.</p>
+
+      <div class="button-container">
+        <a href="CAEt1p1.html" class="part-btn">Part 1</a>
+        <a href="CAEt1p2.html" class="part-btn">Part 2</a>
+        <a href="CAEt1p3.html" class="part-btn">Part 3</a>
+      </div>
+    </div>
+  </main>
+
+  <footer>
+    © Justine Kelly · Modern English Australia
+  </footer>
+</body>
+</html>

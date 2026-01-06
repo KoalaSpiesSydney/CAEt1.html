@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CAE Use of English – Part 2</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      color: #333;
+      margin: 0;
+      padding: 20px;
+      line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      color: #003366;
+      text-align: center;
+      margin-bottom: 18px;
+    }
+
+    .instructions { font-size: 1rem; margin-bottom: 18px; }
+    .text { font-size: 1.05rem; }
+
+    input.blank {
+      width: 120px;
+      border: none;
+      border-bottom: 2px solid #555;
+      font-size: 1rem;
+      text-align: center;
+      margin: 0 4px;
+      padding: 6px 4px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .is-correct {
+      border-bottom-color: #1db954 !important;
+      box-shadow: 0 6px 0 -3px rgba(29,185,84,0.25);
+    }
+    .is-wrong {
+      border-bottom-color: #e74c3c !important;
+      box-shadow: 0 6px 0 -3px rgba(231,76,60,0.22);
+    }
+
+    .actions {
+      margin-top: 20px;
+      padding-top: 14px;
+      border-top: 1px solid #e7e7ee;
+      display: grid;
+      gap: 12px;
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .btn {
+      appearance: none;
+      border: 0;
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s, background 0.2s;
+    }
+    .btn:active { transform: translateY(1px); }
+
+    .btn-primary { background: #003366; color: #fff; }
+    .btn-primary:hover { background: #0055aa; }
+
+    .btn-ghost {
+      background: #e6f0fa;
+      color: #003366;
+      border: 1px solid #cfe0f2;
+    }
+    .btn-ghost:hover { background: #d9e9fb; }
+
+    .score-box {
+      text-align: center;
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: #f5f7fb;
+      border: 1px solid #e3e8f2;
+      color: #003366;
+      font-weight: 700;
+      display: none;
+    }
+
+    .hint {
+      text-align: center;
+      color: #666;
+      font-size: 0.95rem;
+      margin: 0;
+    }
+
+    .explanations {
+      display: none;
+      border: 1px solid #e7e7ee;
+      border-radius: 10px;
+      padding: 14px;
+      background: #fff;
+    }
+
+    .explanations h2 {
+      margin: 0 0 10px;
+      font-size: 1.05rem;
+      color: #003366;
+      text-align: center;
+    }
+
+    .exp-item {
+      padding: 10px 10px;
+      border-radius: 8px;
+      background: #f9fafc;
+      border: 1px solid #edf0f6;
+      margin-bottom: 10px;
+    }
+    .exp-item:last-child { margin-bottom: 0; }
+
+    .exp-q {
+      font-weight: 800;
+      color: #003366;
+      margin-bottom: 4px;
+    }
+
+    .exp-a { margin: 0; color: #333; font-size: 0.98rem; }
+
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 800;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+    .tag-ok {
+      background: rgba(29,185,84,0.12);
+      color: #0f6a2f;
+      border: 1px solid rgba(29,185,84,0.25);
+    }
+    .tag-err {
+      background: rgba(231,76,60,0.12);
+      color: #8a1f14;
+      border: 1px solid rgba(231,76,60,0.25);
+    }
+
+    .nav-bar {
+      display: flex;
+      justify-content: space-around;
+      gap: 10px;
+      background: #003366;
+      padding: 12px;
+      margin-top: 30px;
+      border-radius: 8px 8px 0 0;
+    }
+
+    .nav-bar a {
+      flex: 1;
+      text-align: center;
+      color: white;
+      text-decoration: none;
+      font-size: 1rem;
+      padding: 10px;
+      border-radius: 6px;
+      transition: background 0.3s;
+    }
+    .nav-bar a:hover { background: #0055aa; }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      font-size: 0.9rem;
+      color: #555;
+      background: #f0f0f0;
+      margin-top: auto;
+    }
+
+    @media (max-width: 600px) {
+      body { padding: 10px; }
+      .container { padding: 20px; }
+      input.blank { width: 95px; font-size: 0.98rem; }
+      .btn { width: 100%; }
+      .btn-row { gap: 8px; }
+      .nav-bar { flex-direction: column; }
+      .nav-bar a { font-size: 1rem; padding: 12px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>CAE Use of English – Part 2</h1>
+
+    <p class="instructions">
+      <strong>For questions 8–15,</strong> read the text below and think of the word which best fits each gap.
+      Use only <strong>one word</strong> in each gap. There is an example at the beginning (0).
+    </p>
+
+    <div class="text">
+      In accordance 0. <strong>with</strong> Renaissance ideals, artists pursued anatomical precision and perspective.
+      In regard to patronage, commissions were often accepted 8.
+      <input type="text" class="blank" name="q8" autocomplete="off" /> short notice, especially on behalf 9.
+      <input type="text" class="blank" name="q9" autocomplete="off" /> noble families. To reject such offers was 10.
+      <input type="text" class="blank" name="q10" autocomplete="off" /> of the question. In keeping 11.
+      <input type="text" class="blank" name="q11" autocomplete="off" /> classical themes, mythological subjects dominated. Many were 12.
+      <input type="text" class="blank" name="q12" autocomplete="off" /> the impression that innovation contradicted tradition, leaving some 13.
+      <input type="text" class="blank" name="q13" autocomplete="off" /> a loss when confronted with Mannerist distortions. 14.
+      <input type="text" class="blank" name="q14" autocomplete="off" /> contrast, Baroque painters, in light of Counter-Reformation goals, embraced drama and emotional clarity. This shift marked a transition 15.
+      <input type="text" class="blank" name="q15" autocomplete="off" /> intellectual restraint to theatrical immediacy, as artists sought to captivate viewers through movement, contrast, and divine intensity.
+    </div>
+
+    <!-- Submit / Score / Explanations -->
+    <div class="actions">
+      <p class="hint">Type one word for each gap (8–15), then click <strong>Submit</strong>.</p>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" id="submitBtn" type="button">Submit & Score</button>
+        <button class="btn btn-ghost" id="resetBtn" type="button">Reset</button>
+      </div>
+
+      <div class="score-box" id="scoreBox"></div>
+
+      <div class="explanations" id="explanations">
+        <h2>Explanations</h2>
+        <div id="expList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Bar -->
+  <div class="nav-bar">
+    <a href="index.html">Main Page</a>
+    <a href="CAEt1p1.html">Part 1</a>
+    <a href="CAEt1p3.html">Part 3</a>
+  </div>
+
+  <footer>
+    © Justine Kelly 2025
+  </footer>
+
+  <script>
+    // === Robust scoring: selects inputs by NAME, so IDs are not required ===
+    const answerKey = {
+      q8:  { correct: "on",    why: "The fixed phrase is “on short notice” (with very little warning)." },
+      q9:  { correct: "of",    why: "“On behalf of” is the correct phrase (representing/for)." },
+      q10: { correct: "out",   why: "The expression is “out of the question” (impossible)." },
+      q11: { correct: "with",  why: "The phrase is “in keeping with” (consistent with)." },
+      q12: { correct: "under", why: "The collocation is “under the impression” (believing)." },
+      q13: { correct: "at",    why: "The set phrase is “at a loss” (confused/unsure)." },
+      q14: { correct: "by",    why: "The contrast linker is “by contrast”." },
+      q15: { correct: "from",  why: "We say “a transition from X to Y”." }
+    };
+
+    const submitBtn = document.getElementById("submitBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const scoreBox = document.getElementById("scoreBox");
+    const explanations = document.getElementById("explanations");
+    const expList = document.getElementById("expList");
+
+    // Map name -> input element
+    const inputs = Object.keys(answerKey).map(name => {
+      return document.querySelector(`input[name="${name}"]`);
+    });
+
+    function normalize(str) {
+      return (str || "")
+        .toLowerCase()
+        .trim()
+        .replace(/^[^a-z]+|[^a-z]+$/g, "");
+    }
+
+    function clearFeedback() {
+      inputs.forEach(inp => {
+        if (!inp) return;
+        inp.classList.remove("is-correct", "is-wrong");
+      });
+      scoreBox.style.display = "none";
+      explanations.style.display = "none";
+      expList.innerHTML = "";
+    }
+
+    function buildExplanations(userAnswers) {
+      expList.innerHTML = "";
+      let qNum = 8;
+
+      for (const name of Object.keys(answerKey)) {
+        const item = answerKey[name];
+        const user = userAnswers[name] || "";
+        const isCorrect = normalize(user) === item.correct;
+
+        const wrapper = document.createElement("div");
+        wrapper.className = "exp-item";
+
+        const q = document.createElement("div");
+        q.className = "exp-q";
+        q.textContent = `Q${qNum}`;
+        const tag = document.createElement("span");
+        tag.className = "tag " + (isCorrect ? "tag-ok" : "tag-err");
+        tag.textContent = isCorrect ? "Correct" : "Incorrect";
+        q.appendChild(tag);
+
+        const a = document.createElement("p");
+        a.className = "exp-a";
+        const shownUser = user.trim() ? user.trim() : "—";
+
+        a.innerHTML =
+          `<strong>Your answer:</strong> ${shownUser} &nbsp; | &nbsp; ` +
+          `<strong>Correct:</strong> ${item.correct}<br>` +
+          `${item.why}`;
+
+        wrapper.appendChild(q);
+        wrapper.appendChild(a);
+        expList.appendChild(wrapper);
+
+        qNum++;
+      }
+    }
+
+    submitBtn.addEventListener("click", () => {
+      clearFeedback();
+
+      // Safety check: if any input is missing in the DOM, show a helpful message
+      const missing = inputs
+        .map((inp, i) => ({ inp, name: Object.keys(answerKey)[i] }))
+        .filter(x => !x.inp)
+        .map(x => x.name);
+
+      if (missing.length) {
+        scoreBox.style.display = "block";
+        scoreBox.textContent =
+          `Setup issue: I can't find these fields in the page: ${missing.join(", ")}. ` +
+          `Make sure each blank input has name="q8" ... name="q15".`;
+        return;
+      }
+
+      // Collect answers
+      const userAnswers = {};
+      let allAnswered = true;
+
+      Object.keys(answerKey).forEach(name => {
+        const inp = document.querySelector(`input[name="${name}"]`);
+        userAnswers[name] = inp.value;
+        if (!normalize(inp.value)) allAnswered = false;
+      });
+
+      if (!allAnswered) {
+        scoreBox.style.display = "block";
+        scoreBox.textContent = "Please answer all questions (8–15) before submitting.";
+        return;
+      }
+
+      // Score + mark
+      let score = 0;
+
+      Object.keys(answerKey).forEach(name => {
+        const inp = document.querySelector(`input[name="${name}"]`);
+        const correct = answerKey[name].correct;
+        const user = normalize(inp.value);
+
+        if (user === correct) {
+          score++;
+          inp.classList.add("is-correct");
+        } else {
+          inp.classList.add("is-wrong");
+        }
+      });
+
+      scoreBox.style.display = "block";
+      scoreBox.textContent = `Score: ${score} / ${Object.keys(answerKey).length}`;
+
+      buildExplanations(userAnswers);
+      explanations.style.display = "block";
+
+      scoreBox.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+
+    resetBtn.addEventListener("click", () => {
+      Object.keys(answerKey).forEach(name => {
+        const inp = document.querySelector(`input[name="${name}"]`);
+        inp.value = "";
+      });
+      clearFeedback();
+      document.querySelector(".container").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  </script>
+</body>
+</html>

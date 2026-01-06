@@ -1,0 +1,475 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CAE Use of English – Part 1</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: #f7f7f9;
+      color: #222;
+      line-height: 1.6;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: auto;
+      background: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 1.6rem;
+      margin-bottom: 15px;
+      color: #003366;
+    }
+
+    p { margin-bottom: 1em; font-size: 1rem; }
+
+    select {
+      font-size: 1rem;
+      padding: 6px 8px;
+      margin: 0 4px;
+      border-radius: 6px;
+      border: 1px solid #ccc;
+      background: #fff;
+      max-width: 100%;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    option[disabled] { font-weight: bold; color: green; }
+
+    /* Feedback styling */
+    .is-correct {
+      border-color: #1db954;
+      box-shadow: 0 0 0 3px rgba(29,185,84,0.15);
+    }
+
+    .is-wrong {
+      border-color: #e74c3c;
+      box-shadow: 0 0 0 3px rgba(231,76,60,0.15);
+    }
+
+    /* Actions area */
+    .actions {
+      margin-top: 18px;
+      padding-top: 14px;
+      border-top: 1px solid #e7e7ee;
+      display: grid;
+      gap: 12px;
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .btn {
+      appearance: none;
+      border: 0;
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s, background 0.2s;
+    }
+
+    .btn:active { transform: translateY(1px); }
+
+    .btn-primary {
+      background: #003366;
+      color: #fff;
+    }
+
+    .btn-primary:hover { background: #0055aa; }
+
+    .btn-ghost {
+      background: #e6f0fa;
+      color: #003366;
+      border: 1px solid #cfe0f2;
+    }
+
+    .btn-ghost:hover { background: #d9e9fb; }
+
+    .score-box {
+      text-align: center;
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: #f5f7fb;
+      border: 1px solid #e3e8f2;
+      color: #003366;
+      font-weight: 700;
+      display: none;
+    }
+
+    .hint {
+      text-align: center;
+      color: #666;
+      font-size: 0.95rem;
+      margin: 0;
+    }
+
+    .explanations {
+      display: none;
+      border: 1px solid #e7e7ee;
+      border-radius: 10px;
+      padding: 14px;
+      background: #fff;
+    }
+
+    .explanations h2 {
+      margin: 0 0 10px;
+      font-size: 1.05rem;
+      color: #003366;
+      text-align: center;
+    }
+
+    .exp-item {
+      padding: 10px 10px;
+      border-radius: 8px;
+      background: #f9fafc;
+      border: 1px solid #edf0f6;
+      margin-bottom: 10px;
+    }
+
+    .exp-item:last-child { margin-bottom: 0; }
+
+    .exp-q {
+      font-weight: 800;
+      color: #003366;
+      margin-bottom: 4px;
+    }
+
+    .exp-a {
+      margin: 0;
+      color: #333;
+      font-size: 0.98rem;
+    }
+
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 800;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+
+    .tag-ok {
+      background: rgba(29,185,84,0.12);
+      color: #0f6a2f;
+      border: 1px solid rgba(29,185,84,0.25);
+    }
+
+    .tag-err {
+      background: rgba(231,76,60,0.12);
+      color: #8a1f14;
+      border: 1px solid rgba(231,76,60,0.25);
+    }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      font-size: 0.9rem;
+      color: #555;
+      background: #f0f0f0;
+      margin-top: auto;
+    }
+
+    /* Navigation bar */
+    .nav-bar {
+      display: flex;
+      justify-content: space-around;
+      gap: 10px;
+      background: #003366;
+      padding: 12px;
+      margin-top: 30px;
+      border-radius: 8px 8px 0 0;
+    }
+
+    .nav-bar a {
+      flex: 1;
+      text-align: center;
+      color: white;
+      text-decoration: none;
+      font-size: 1rem;
+      padding: 10px;
+      border-radius: 6px;
+      transition: background 0.3s;
+    }
+
+    .nav-bar a:hover { background: #0055aa; }
+
+    @media (max-width: 600px) {
+      body { padding: 10px; }
+      p, select { font-size: 0.95rem; }
+      .btn { width: 100%; }
+      .btn-row { gap: 8px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>CAE Use of English – Part 1</h1>
+    <p>
+      For questions 0–7, read the text below and decide which answer (A, B, C or D) best fits each gap.
+      There is an example at the beginning (0).
+    </p>
+    <p><strong>Example:</strong> 0 <u>Myths</u></p>
+
+    <p>
+      Many <strong>0.</strong>
+      <select disabled>
+        <option>— Choose —</option>
+        <option selected disabled>✔ Myths</option>
+        <option>Stories</option>
+        <option>Books</option>
+        <option>Heroes</option>
+        <option>Information</option>
+      </select>
+      and legends share <strong>1.</strong>
+      <select id="q1">
+        <option value="">— Choose —</option>
+        <option value="A">A Striking</option>
+        <option value="B">B Very</option>
+        <option value="C">C Really</option>
+        <option value="D">D Weak</option>
+        <option value="E">E Nothing</option>
+      </select>
+      similarities across cultures, suggesting common human concerns and storytelling instincts. Flood myths, for example,
+      appear in Mesopotamian, Hindu, and Indigenous American traditions, often involving divine punishment and survival through a chosen hero.
+    </p>
+
+    <p>
+      Creation stories frequently feature chaos transformed into order, with gods or cosmic forces <strong>2.</strong>
+      <select id="q2">
+        <option value="">— Choose —</option>
+        <option value="A">A Creating</option>
+        <option value="B">B Make</option>
+        <option value="C">C Write</option>
+        <option value="D">D Shaping</option>
+        <option value="E">E Telling</option>
+      </select>
+      the world—seen in Greek, Egyptian, and Maori accounts. Trickster figures like Loki (Norse), Anansi (West African), and Coyote (Native American) embody cleverness and disruption, challenging norms and revealing <strong>3.</strong>
+      <select id="q3">
+        <option value="">— Choose —</option>
+        <option value="A">A Hidden</option>
+        <option value="B">B Secret</option>
+        <option value="C">C Clandestine</option>
+        <option value="D">D Forgotten</option>
+        <option value="E">E Wrong</option>
+      </select>
+      truths.
+    </p>
+
+    <p>
+      Hero’s journey <strong>4.</strong>
+      <select id="q4">
+        <option value="">— Choose —</option>
+        <option value="A">A Rumours</option>
+        <option value="B">B Story</option>
+        <option value="C">C Narratives</option>
+        <option value="D">D Plot</option>
+        <option value="E">E Writing</option>
+      </select>
+      , from Gilgamesh to King Arthur, follow a pattern of departure, trial, and <strong>5.</strong>
+      <select id="q5">
+        <option value="">— Choose —</option>
+        <option value="A">A Come back</option>
+        <option value="B">B Return</option>
+        <option value="C">C Refuse</option>
+        <option value="D">D Reunite</option>
+        <option value="E">E Fail</option>
+      </select>
+      , emphasizing growth and sacrifice.
+    </p>
+
+    <p>
+      These recurring motifs reflect shared <strong>6.</strong>
+      <select id="q6">
+        <option value="">— Choose —</option>
+        <option value="A">A Physiological</option>
+        <option value="B">B Psychological</option>
+        <option value="C">C Sociological</option>
+        <option value="D">D Mindful</option>
+        <option value="E">E Entertaining</option>
+      </select>
+      and social themes: morality, identity, power, and transformation.
+    </p>
+
+    <p>
+      Their universality underscores the <strong>7.</strong>
+      <select id="q7">
+        <option value="">— Choose —</option>
+        <option value="A">A Real</option>
+        <option value="B">B Shallow</option>
+        <option value="C">C Deep</option>
+        <option value="D">D Weak</option>
+        <option value="E">E Huge</option>
+      </select>
+      connections among human societies across time and geography.
+    </p>
+
+    <!-- Submit / Score / Explanations -->
+    <div class="actions" id="actions">
+      <p class="hint">Choose an answer for each gap, then click <strong>Submit</strong>.</p>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" id="submitBtn" type="button">Submit & Score</button>
+        <button class="btn btn-ghost" id="resetBtn" type="button">Reset</button>
+      </div>
+
+      <div class="score-box" id="scoreBox"></div>
+
+      <div class="explanations" id="explanations">
+        <h2>Explanations</h2>
+        <div id="expList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Bar -->
+  <div class="nav-bar">
+    <a href="index.html">Main Page</a>
+    <a href="CAEt1p2.html">Part 2</a>
+    <a href="CAEt1p3.html">Part 3</a>
+  </div>
+
+  <footer>
+    © Justine Kelly 2025
+  </footer>
+
+  <script>
+    // ===== Answer key + explanations =====
+    const answerKey = {
+      q1: { correct: "A", answerText: "Striking", why: "“Striking similarities” is a natural collocation meaning very noticeable similarities." },
+      q2: { correct: "D", answerText: "Shaping",  why: "Cosmic forces “shaping the world” fits the meaning (forming/creating structure from chaos)." },
+      q3: { correct: "A", answerText: "Hidden",   why: "Trickster figures reveal “hidden truths” (truths not obvious at first)." },
+      q4: { correct: "C", answerText: "Narratives", why: "“Hero’s journey narratives” is the best plural noun for stories across cultures." },
+      q5: { correct: "B", answerText: "Return",    why: "The classic pattern is “departure, trial, and return” (coming back changed)." },
+      q6: { correct: "B", answerText: "Psychological", why: "Myths reflect “psychological and social themes” (mind + society)." },
+      q7: { correct: "C", answerText: "Deep",      why: "“Deep connections” is the strongest, most natural phrase for strong shared links." }
+    };
+
+    const selects = Object.keys(answerKey).map(id => document.getElementById(id));
+    const submitBtn = document.getElementById("submitBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const scoreBox = document.getElementById("scoreBox");
+    const explanations = document.getElementById("explanations");
+    const expList = document.getElementById("expList");
+
+    function clearFeedback() {
+      selects.forEach(sel => {
+        sel.classList.remove("is-correct", "is-wrong");
+      });
+      scoreBox.style.display = "none";
+      explanations.style.display = "none";
+      expList.innerHTML = "";
+    }
+
+    function buildExplanations(userAnswers) {
+      expList.innerHTML = "";
+
+      let n = 1;
+      for (const id of Object.keys(answerKey)) {
+        const item = answerKey[id];
+        const user = userAnswers[id] || "";
+        const isCorrect = user === item.correct;
+
+        const wrapper = document.createElement("div");
+        wrapper.className = "exp-item";
+
+        const q = document.createElement("div");
+        q.className = "exp-q";
+        q.textContent = `Q${n}`;
+        const tag = document.createElement("span");
+        tag.className = "tag " + (isCorrect ? "tag-ok" : "tag-err");
+        tag.textContent = isCorrect ? "Correct" : "Incorrect";
+        q.appendChild(tag);
+
+        const a = document.createElement("p");
+        a.className = "exp-a";
+
+        const userText = user ? `${user}` : "—";
+        a.innerHTML =
+          `<strong>Your answer:</strong> ${userText} &nbsp; | &nbsp; ` +
+          `<strong>Correct:</strong> ${item.correct} (${item.answerText})<br>` +
+          `${item.why}`;
+
+        wrapper.appendChild(q);
+        wrapper.appendChild(a);
+        expList.appendChild(wrapper);
+
+        n++;
+      }
+    }
+
+    submitBtn.addEventListener("click", () => {
+      clearFeedback();
+
+      // Collect answers
+      const userAnswers = {};
+      let allAnswered = true;
+
+      selects.forEach(sel => {
+        userAnswers[sel.id] = sel.value;
+        if (!sel.value) allAnswered = false;
+      });
+
+      if (!allAnswered) {
+        scoreBox.style.display = "block";
+        scoreBox.textContent = "Please answer all questions (1–7) before submitting.";
+        return;
+      }
+
+      // Score + mark
+      let score = 0;
+
+      selects.forEach(sel => {
+        const key = answerKey[sel.id].correct;
+        if (sel.value === key) {
+          score++;
+          sel.classList.add("is-correct");
+        } else {
+          sel.classList.add("is-wrong");
+        }
+      });
+
+      // Show score
+      scoreBox.style.display = "block";
+      scoreBox.textContent = `Score: ${score} / ${selects.length}`;
+
+      // Show explanations
+      buildExplanations(userAnswers);
+      explanations.style.display = "block";
+
+      // Scroll to results (nice on mobile)
+      scoreBox.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+
+    resetBtn.addEventListener("click", () => {
+      selects.forEach(sel => (sel.value = ""));
+      clearFeedback();
+      // Scroll back to top of the container a bit
+      document.querySelector(".container").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  </script>
+</body>
+</html>

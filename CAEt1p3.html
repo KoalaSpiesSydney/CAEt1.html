@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>CAE Use of English – Part 3</title>
+  <style>
+    * { box-sizing: border-box; }
+
+    body {
+      font-family: Arial, sans-serif;
+      background: #f9f9f9;
+      color: #333;
+      margin: 0;
+      padding: 20px;
+      line-height: 1.6;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+
+    .container {
+      max-width: 1000px;
+      margin: auto;
+      background: #fff;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 20px;
+    }
+
+    h1 {
+      font-size: 1.6rem;
+      color: #003366;
+      text-align: center;
+      grid-column: 1 / -1;
+      margin: 0 0 10px;
+    }
+
+    .instructions {
+      font-size: 1rem;
+      margin: 0 0 10px;
+      grid-column: 1 / -1;
+    }
+
+    .text { font-size: 1.05rem; }
+
+    input.blank {
+      width: 130px;
+      border: none;
+      border-bottom: 2px solid #696969;
+      font-size: 1rem;
+      text-align: center;
+      margin: 0 4px;
+      padding: 6px 4px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    /* Feedback styling */
+    .is-correct {
+      border-bottom-color: #1db954 !important;
+      box-shadow: 0 6px 0 -3px rgba(29,185,84,0.25);
+    }
+    .is-wrong {
+      border-bottom-color: #e74c3c !important;
+      box-shadow: 0 6px 0 -3px rgba(231,76,60,0.22);
+    }
+
+    .wordlist {
+      background: #f2f2f2;
+      padding: 15px;
+      border-radius: 10px;
+      font-size: 1rem;
+      align-self: start;
+    }
+
+    .wordlist h3 {
+      font-size: 1.1rem;
+      margin-top: 0;
+      color: #003366;
+    }
+
+    .wordlist ul {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 12px;
+    }
+
+    .wordlist li {
+      margin: 8px 0;
+      font-weight: bold;
+    }
+
+    .bonus {
+      margin: 10px 0 0;
+      padding-top: 10px;
+      border-top: 1px solid rgba(0,0,0,0.12);
+      font-size: 0.98rem;
+    }
+
+    /* Actions area */
+    .actions {
+      grid-column: 1 / -1;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid #e7e7ee;
+      display: grid;
+      gap: 12px;
+    }
+
+    .hint {
+      text-align: center;
+      color: #666;
+      font-size: 0.95rem;
+      margin: 0;
+    }
+
+    .btn-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    .btn {
+      appearance: none;
+      border: 0;
+      border-radius: 10px;
+      padding: 12px 16px;
+      font-size: 1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.15s, background 0.2s;
+    }
+    .btn:active { transform: translateY(1px); }
+
+    .btn-primary { background: #003366; color: #fff; }
+    .btn-primary:hover { background: #0055aa; }
+
+    .btn-ghost {
+      background: #e6f0fa;
+      color: #003366;
+      border: 1px solid #cfe0f2;
+    }
+    .btn-ghost:hover { background: #d9e9fb; }
+
+    .score-box {
+      text-align: center;
+      padding: 12px 14px;
+      border-radius: 10px;
+      background: #f5f7fb;
+      border: 1px solid #e3e8f2;
+      color: #003366;
+      font-weight: 700;
+      display: none;
+    }
+
+    .explanations {
+      display: none;
+      border: 1px solid #e7e7ee;
+      border-radius: 10px;
+      padding: 14px;
+      background: #fff;
+    }
+
+    .explanations h2 {
+      margin: 0 0 10px;
+      font-size: 1.05rem;
+      color: #003366;
+      text-align: center;
+    }
+
+    .exp-item {
+      padding: 10px 10px;
+      border-radius: 8px;
+      background: #f9fafc;
+      border: 1px solid #edf0f6;
+      margin-bottom: 10px;
+    }
+    .exp-item:last-child { margin-bottom: 0; }
+
+    .exp-q {
+      font-weight: 800;
+      color: #003366;
+      margin-bottom: 4px;
+    }
+
+    .exp-a { margin: 0; color: #333; font-size: 0.98rem; }
+
+    .tag {
+      display: inline-block;
+      padding: 2px 8px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 800;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+    .tag-ok {
+      background: rgba(29,185,84,0.12);
+      color: #0f6a2f;
+      border: 1px solid rgba(29,185,84,0.25);
+    }
+    .tag-err {
+      background: rgba(231,76,60,0.12);
+      color: #8a1f14;
+      border: 1px solid rgba(231,76,60,0.25);
+    }
+
+    /* Navigation bar */
+    .nav-bar {
+      display: flex;
+      justify-content: space-around;
+      gap: 10px;
+      background: #003366;
+      padding: 12px;
+      margin-top: 30px;
+      border-radius: 8px 8px 0 0;
+    }
+
+    .nav-bar a {
+      flex: 1;
+      text-align: center;
+      color: white;
+      text-decoration: none;
+      font-size: 1rem;
+      padding: 10px;
+      border-radius: 6px;
+      transition: background 0.3s;
+    }
+
+    .nav-bar a:hover { background: #0055aa; }
+
+    footer {
+      text-align: center;
+      padding: 15px;
+      font-size: 0.9rem;
+      color: #555;
+      background: #f0f0f0;
+      margin-top: auto;
+    }
+
+    /* Responsive */
+    @media (max-width: 900px) {
+      .container { grid-template-columns: 1fr; }
+      input.blank { width: 110px; }
+    }
+
+    @media (max-width: 600px) {
+      body { padding: 10px; }
+      .container { padding: 20px; }
+      input.blank { width: 95px; }
+      .btn { width: 100%; }
+      .btn-row { gap: 8px; }
+      .nav-bar { flex-direction: column; }
+      .nav-bar a { font-size: 1rem; padding: 12px; }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h1>CAE Use of English – Part 3</h1>
+
+    <p class="instructions">
+      <strong>Questions 16–20</strong><br>
+      For each question, use the word in CAPITALS on the right to form a word that fits in the gap.
+      There is an example (0) at the beginning.
+    </p>
+
+    <div class="text">
+      Mexican history is 0. <strong>deeply</strong> rooted in the 16.
+      <input type="text" class="blank" name="q16" autocomplete="off" />
+      traditions of ancient civilizations such as the Maya and Aztecs.
+      17.
+      <input type="text" class="blank" name="q17" autocomplete="off" />
+      have uncovered temples and altars where ritual
+      18.
+      <input type="text" class="blank" name="q18" autocomplete="off" />
+      of enslaved people and animals played a central role in
+      19.
+      <input type="text" class="blank" name="q19" autocomplete="off" />
+      life, often intended to honour deities or ensure cosmic balance.
+      These practices, though stark to modern eyes, reflected a complex worldview in which life, death, and nature were intertwined.
+      Today, such discoveries continue to shape our understanding of pre-Columbian culture and its 20.
+      <input type="text" class="blank" name="q20" autocomplete="off" />
+      influence on Mexican identity.
+    </div>
+
+    <div class="wordlist">
+      <h3>Words</h3>
+      <ul>
+        <li>DEEP (deeply example)</li>
+        <li>CEREMONY</li>
+        <li>SACRED</li>
+        <li>RELIGION</li>
+        <li>ENDURE</li>
+        <li>ARCHEOLOGY</li>
+      </ul>
+
+      <p class="bonus"><strong>21. BONUS:</strong> A deity is a) associated with nutrition b) a god c) a king or emperor</p>
+    </div>
+
+    <!-- Submit / Score / Explanations -->
+    <div class="actions">
+      <p class="hint">Type the correct word form for each gap (16–20), then click <strong>Submit</strong>.</p>
+
+      <div class="btn-row">
+        <button class="btn btn-primary" id="submitBtn" type="button">Submit & Score</button>
+        <button class="btn btn-ghost" id="resetBtn" type="button">Reset</button>
+      </div>
+
+      <div class="score-box" id="scoreBox"></div>
+
+      <div class="explanations" id="explanations">
+        <h2>Explanations</h2>
+        <div id="expList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Navigation Bar -->
+  <div class="nav-bar">
+    <a href="index.html">Main Page</a>
+    <a href="CAEt1p1.html">Part 1</a>
+    <a href="CAEt1p2.html">Part 2</a>
+  </div>
+
+  <footer>
+    © Justine Kelly 2025
+  </footer>
+
+  <script>
+    // === Part 3: Word formation answers (case-insensitive, trims punctuation) ===
+    // Note: "archaeologists" is the natural noun for people; accepted is "archeologists" too.
+    const answerKey = {
+      q16: { correct: ["sacred"], why: "From SACRED → “sacred traditions” is the natural collocation." },
+      q17: { correct: ["Archaeologists", "Archeologists"], why: "From ARCHEOLOGY → the people are “archaeologists” (US spelling “archeologists” also accepted)." },
+      q18: { correct: ["ceremonies"], why: "From CEREMONY → plural “ceremonies” fits: “ritual ceremonies … played a role”." },
+      q19: { correct: ["religious"], why: "From RELIGION → adjective “religious life” is the correct form." },
+      q20: { correct: ["enduring"], why: "From ENDURE → adjective “enduring influence” is the standard phrase." }
+    };
+
+    // Bonus (not counted in score unless you want it)
+    const bonusKey = { correct: "b" };
+
+    const submitBtn = document.getElementById("submitBtn");
+    const resetBtn = document.getElementById("resetBtn");
+    const scoreBox = document.getElementById("scoreBox");
+    const explanations = document.getElementById("explanations");
+    const expList = document.getElementById("expList");
+
+    const inputs = Object.keys(answerKey).map(name => document.querySelector(`input[name="${name}"]`));
+
+    function normalize(str) {
+      return (str || "")
+        .toLowerCase()
+        .trim()
+        .replace(/^[^a-z]+|[^a-z]+$/g, "");
+    }
+
+    function clearFeedback() {
+      inputs.forEach(inp => {
+        if (!inp) return;
+        inp.classList.remove("is-correct", "is-wrong");
+      });
+      scoreBox.style.display = "none";
+      explanations.style.display = "none";
+      expList.innerHTML = "";
+    }
+
+    function isAnswerCorrect(name, userRaw) {
+      const user = normalize(userRaw);
+      return answerKey[name].correct.includes(user);
+    }
+
+    function buildExplanations(userAnswers) {
+      expList.innerHTML = "";
+      let qNum = 16;
+
+      for (const name of Object.keys(answerKey)) {
+        const item = answerKey[name];
+        const user = userAnswers[name] || "";
+        const correct = isAnswerCorrect(name, user);
+
+        const wrapper = document.createElement("div");
+        wrapper.className = "exp-item";
+
+        const q = document.createElement("div");
+        q.className = "exp-q";
+        q.textContent = `Q${qNum}`;
+        const tag = document.createElement("span");
+        tag.className = "tag " + (correct ? "tag-ok" : "tag-err");
+        tag.textContent = correct ? "Correct" : "Incorrect";
+        q.appendChild(tag);
+
+        const a = document.createElement("p");
+        a.className = "exp-a";
+        const shownUser = user.trim() ? user.trim() : "—";
+        const correctShown = item.correct.join(" / ");
+
+        a.innerHTML =
+          `<strong>Your answer:</strong> ${shownUser} &nbsp; | &nbsp; ` +
+          `<strong>Correct:</strong> ${correctShown}<br>` +
+          `${item.why}`;
+
+        wrapper.appendChild(q);
+        wrapper.appendChild(a);
+        expList.appendChild(wrapper);
+
+        qNum++;
+      }
+    }
+
+    submitBtn.addEventListener("click", () => {
+      clearFeedback();
+
+      // Ensure all fields exist
+      const missing = inputs
+        .map((inp, i) => ({ inp, name: Object.keys(answerKey)[i] }))
+        .filter(x => !x.inp)
+        .map(x => x.name);
+
+      if (missing.length) {
+        scoreBox.style.display = "block";
+        scoreBox.textContent =
+          `Setup issue: I can't find these fields in the page: ${missing.join(", ")}. ` +
+          `Make sure each blank input has name="q16" ... name="q20".`;
+        return;
+      }
+
+      const userAnswers = {};
+      let allAnswered = true;
+
+      Object.keys(answerKey).forEach(name => {
+        const inp = document.querySelector(`input[name="${name}"]`);
+        userAnswers[name] = inp.value;
+        if (!normalize(inp.value)) allAnswered = false;
+      });
+
+      if (!allAnswered) {
+        scoreBox.style.display = "block";
+        scoreBox.textContent = "Please answer all questions (16–20) before submitting.";
+        return;
+      }
+
+      let score = 0;
+
+      Object.keys(answerKey).forEach(name => {
+        const inp = document.querySelector(`input[name="${name}"]`);
+        const ok = isAnswerCorrect(name, inp.value);
+
+        if (ok) {
+          score++;
+          inp.classList.add("is-correct");
+        } else {
+          inp.classList.add("is-wrong");
+        }
+      });
+
+      scoreBox.style.display = "block";
+      scoreBox.textContent = `Score: ${score} / ${Object.keys(answerKey).length}`;
+
+      buildExplanations(userAnswers);
+      explanations.style.display = "block";
+
+      scoreBox.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+
+    resetBtn.addEventListener("click", () => {
+      Object.keys(answerKey).forEach(name => {
+        const inp = document.querySelector(`input[name="${name}"]`);
+        inp.value = "";
+      });
+      clearFeedback();
+      document.querySelector(".container").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
+  </script>
+</body>
+</html>
